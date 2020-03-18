@@ -24,19 +24,38 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: '/',
+  publicPath: './',
+  //  publicPath: '/co/easyjs_rtmp/cyberplayer-3.5.2/dist/',
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
     port: port,
-    open: true,
+    //proxy:"http://127.0.0.1:8081"
+    open: false,
     overlay: {
       warnings: false,
       errors: true
     },
-    before: require('./mock/mock-server.js')
+
+    proxy: {
+      // change xxx-api/login => mock/login
+      // detail: https://cli.vuejs.org/config/#devserver-proxy
+      '/dev-api': {
+        target: 'http://localhost:8088/manageSystem',
+        //changeOrigin: true
+        pathRewrite: {
+          '^/dev-api': '/'
+          //pathRewrite: {'^/api': '/'} 重写之后url为 http://192.168.1.16:8085/xxxx
+          //pathRewrite: {'^/api': '/api'} 重写之后url为 http://192.168.1.16:8085/api/xxxx
+        }
+      }
+    },
+
+    //去掉生产环境的模拟数据
+    //before: require('./mock/mock-server.js')
+
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
